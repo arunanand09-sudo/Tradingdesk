@@ -1,0 +1,16 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests
+      - run: mypy
+      # Risk engine must stay at 100% branch coverage (PRD Section 10).
+      - run: pytest -q --cov=tradingdesk.risk --cov-branch --cov-fail-under=100
+      - run: pytest -q --cov=tradingdesk --cov-branch --cov-report=term

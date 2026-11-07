@@ -1,0 +1,56 @@
+# Desk configuration. This file is version-controlled on purpose (R-RISK-13):
+# a limit change is a commit, and limits cannot be loosened while positions are open.
+
+[risk]
+per_trade_risk_pct = 0.5        # R-RISK-01, hard max 1.0
+daily_loss_pct = 2.0            # R-RISK-02 (or daily_loss_r, whichever is smaller)
+daily_loss_r = 3
+weekly_loss_pct = 5.0           # R-RISK-03
+weekly_loss_r = 10
+max_open_risk_pct = 2.0         # R-RISK-04
+max_trades_per_session = 5      # R-RISK-06
+no_entry_after_open_min = 15    # R-RISK-07
+no_entry_before_close_min = 15
+max_leverage = 5                # R-RISK-08, notional / equity
+event_blackout_min = 5          # R-RISK-10
+max_candidates = 5              # R-SCAN-03
+
+# R-EXE-04: no default. FLATTEN or REST_ON_BROKER_STOPS.
+disconnect_policy = "REST_ON_BROKER_STOPS"
+
+# K1 / D2: OPERATOR MUST SET. Cumulative live loss (GBP) at which everything stops.
+# Placeholder value. Replace before the first live trade.
+kill_k1_absolute_loss_gbp = 1000
+
+[session]
+# D3. IG UK/EU index cash session in London time. For the US cash session use 14:30 to 21:00.
+tz = "Europe/London"
+open = "08:00"
+close = "16:30"
+
+# Instrument registry. Epics are IG daily funded bet (DFB) examples: verify each
+# epic on your account with `GET /markets?searchTerm=...` before using it.
+# value_per_point: GBP per point per 1 unit of stake (spread bet: 1).
+[instruments."IX.D.FTSE.DAILY.IP"]
+min_size = 0.5
+size_step = 0.01
+value_per_point = 1
+correlation_group = "uk_index"
+
+[instruments."IX.D.DAX.DAILY.IP"]
+min_size = 0.5
+size_step = 0.01
+value_per_point = 1
+correlation_group = "eu_index"
+
+[instruments."IX.D.SPTRD.DAILY.IP"]
+min_size = 0.5
+size_step = 0.01
+value_per_point = 1
+correlation_group = "us_index"
+
+[instruments."IX.D.NASDAQ.CASH.IP"]
+min_size = 0.5
+size_step = 0.01
+value_per_point = 1
+correlation_group = "us_index"

@@ -1,0 +1,44 @@
+[project]
+name = "tradingdesk"
+version = "0.1.0"
+description = "Intraday trading research and execution system (risk-first, IG adapter)"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.6",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov", "hypothesis>=6", "ruff", "mypy", "types-requests"]
+
+[project.scripts]
+tdesk = "tradingdesk.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tradingdesk"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["decimal.Decimal", "D"]
+
+[tool.mypy]
+strict = true
+files = ["src/tradingdesk/risk", "src/tradingdesk/domain.py"]
+plugins = ["pydantic.mypy"]
+
+[tool.coverage.run]
+branch = true
